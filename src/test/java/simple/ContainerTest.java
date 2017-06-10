@@ -68,13 +68,19 @@ public class ContainerTest {
     }
 
     @Test
-    public void sampleTest() throws DependencyException {
+    public void createObjectWithRegisteredDependencies() throws DependencyException {
         injector.registerConstant("I", 42);
         injector.registerFactory("D", new FactoryD1(), "I");
         InterfaceD d = (InterfaceD) injector.getObject("D");
         assertThat(d, is(instanceOf(ImplementationD1.class)));
         ImplementationD1 d1 = (ImplementationD1) d;
         assertThat(d1.getI(), is(42));
+    }
+
+    @Test(expected = DependencyException.class)
+    public void createObjectWithUnregisteredConstants() throws DependencyException {
+        injector.registerFactory("D", new FactoryD1());
+        InterfaceD d = (InterfaceD) injector.getObject("D");
     }
 
 }
