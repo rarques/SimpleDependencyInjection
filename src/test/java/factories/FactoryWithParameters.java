@@ -11,8 +11,12 @@ public class FactoryWithParameters implements Factory {
     @Override
     public Object create(Object... parameters) throws DependencyException {
         StringBuilder strb = new StringBuilder();
-        for (Object o : parameters) {
-            strb.append((String) o);
+        try {
+            for (Object o : parameters) {
+                strb.append((String) o);
+            }
+        } catch (ClassCastException ex) {
+            throw new DependencyException(ex);
         }
         return strb.toString();
     }
