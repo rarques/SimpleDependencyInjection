@@ -78,7 +78,7 @@ public class ContainerTest {
     }
 
     @Test(expected = DependencyException.class)
-    public void createObjectWithUnregisteredConstants() throws DependencyException {
+    public void createObjectWithWrongParameters() throws DependencyException {
         injector.registerFactory("D", new FactoryD1());
         InterfaceD d = (InterfaceD) injector.getObject("D");
     }
