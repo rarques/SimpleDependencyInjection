@@ -12,6 +12,7 @@ public class Container implements Injector {
 
     private Map<String, Object> registeredConstants = new HashMap<>();
     private Map<String, Factory> registeredFactories = new HashMap<>();
+    private Map<Factory, String[]> parametersForFactories = new HashMap<>();
 
     public void registerConstant(String name,
                                  Object value)
@@ -31,6 +32,7 @@ public class Container implements Injector {
 
         if (!registeredFactories.containsKey(name)) {
             registeredFactories.put(name, factory);
+            parametersForFactories.put(factory, parameters);
         } else {
             throw new DependencyException("A factory is already registered with the same name");
         }
@@ -42,8 +44,7 @@ public class Container implements Injector {
         if (isConstant(name)) {
             return registeredConstants.get(name);
         } else if (isFactory(name)) {
-            Factory factory = registeredFactories.get(name);
-            return factory.create();
+            return createObjectFromFactory(name);
         } else {
             throw new DependencyException("Not registered constant/factory");
         }
@@ -56,6 +57,12 @@ public class Container implements Injector {
 
     private boolean isFactory(String name) {
         return registeredFactories.containsKey(name);
+    }
+
+    private Object createObjectFromFactory(String name) throws DependencyException {
+        Factory factory = registeredFactories.get(name);
+        String[] parameters = parametersForFactories.get(factory);
+        return factory.create(parameters);
     }
 
 }

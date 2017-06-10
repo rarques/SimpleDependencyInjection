@@ -2,12 +2,10 @@ package simple;
 
 import common.DependencyException;
 import implementations.ImplementationD1;
-import interfaces.InterfaceD;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 
 public class ContainerTest {
@@ -56,6 +54,14 @@ public class ContainerTest {
         injector.getObject("NOT_REGISTERED_FACTORY");
     }
 
+    @Test
+    public void registerFactoryWithParameters() throws DependencyException {
+        injector.registerFactory("BigObject", new FactoryWithParameters(),
+                "Parameter 1, ", "Parameter 2, ", "Parameter 3");
+        String object = (String) injector.getObject("BigObject");
+        assertThat(object, is("Parameter 1, Parameter 2, Parameter 3"));
+    }
+
 //    @Test
 //    public void sampleTest() {
 //        try {
@@ -78,6 +84,18 @@ class SimpleFactory implements Factory {
     @Override
     public Object create(Object... parameters) throws DependencyException {
         return "Simple object created";
+    }
+}
+
+class FactoryWithParameters implements Factory {
+    String object = "";
+
+    @Override
+    public Object create(Object... parameters) throws DependencyException {
+        for (Object o : parameters) {
+            object += (String) o;
+        }
+        return object;
     }
 }
 
