@@ -3,6 +3,8 @@ package simple;
 import common.DependencyException;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -62,7 +64,18 @@ public class Container implements Injector {
     private Object createObjectFromFactory(String name) throws DependencyException {
         Factory factory = registeredFactories.get(name);
         String[] parameters = parametersForFactories.get(factory);
-        return factory.create(parameters);
+        List<Object> constants = getConstantsFromParameters(parameters);
+        return factory.create(constants.toArray());
+    }
+
+    private List<Object> getConstantsFromParameters(String[] parameters) {
+        List<Object> constants = new LinkedList<>();
+        for (String parameter :
+                parameters) {
+            Object constant = registeredConstants.get(parameter);
+            constants.add(constant);
+        }
+        return constants;
     }
 
 }

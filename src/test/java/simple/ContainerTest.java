@@ -2,10 +2,12 @@ package simple;
 
 import common.DependencyException;
 import implementations.ImplementationD1;
+import interfaces.InterfaceD;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 
 public class ContainerTest {
@@ -44,8 +46,11 @@ public class ContainerTest {
 
     @Test
     public void registerFactoryWithParameters() throws DependencyException {
+        injector.registerConstant("A", "Parameter 1, ");
+        injector.registerConstant("B", "Parameter 2, ");
+        injector.registerConstant("C", "Parameter 3");
         injector.registerFactory("BigObject", new FactoryWithParameters(),
-                "Parameter 1, ", "Parameter 2, ", "Parameter 3");
+                "A", "B", "C");
         String object = (String) injector.getObject("BigObject");
         assertThat(object, is("Parameter 1, Parameter 2, Parameter 3"));
     }
@@ -62,20 +67,16 @@ public class ContainerTest {
         injector.getObject("NOT_REGISTERED_FACTORY");
     }
 
-//    @Test
-//    public void sampleTest() {
-//        try {
-//            Injector injector = new Container();
-//            injector.registerConstant("I", 42);
-//            injector.registerFactory("D", new FactoryD1(), "I");
-//            InterfaceD d = (InterfaceD) injector.getObject("D");
-//            assertThat(d, is(instanceOf(ImplementationD1.class)));
-//            ImplementationD1 d1 = (ImplementationD1) d;
-//            assertThat(d1.getI(), is(42));
-//        } catch (DependencyException ex) {
-//            ex.printStackTrace();
-//        }
-//    }
+    @Test
+    public void sampleTest() throws DependencyException {
+            Injector injector = new Container();
+            injector.registerConstant("I", 42);
+            injector.registerFactory("D", new FactoryD1(), "I");
+            InterfaceD d = (InterfaceD) injector.getObject("D");
+            assertThat(d, is(instanceOf(ImplementationD1.class)));
+            ImplementationD1 d1 = (ImplementationD1) d;
+            assertThat(d1.getI(), is(42));
+    }
 
 }
 
