@@ -32,11 +32,22 @@ public class ContainerTest {
         injector.registerConstant("CONSTANT_NAME", "another value");
     }
 
+    @Test(expected = DependencyException.class)
+    public void requestNotRegisteredConstant() throws DependencyException {
+        injector.getObject("NOT_REGISTERED_CONSTANT");
+    }
+
     @Test
     public void registerFactory() throws DependencyException {
         injector.registerFactory("SimpleObject", new SimpleFactory());
         String createdObject = (String) injector.getObject("SimpleObject");
         assertThat(createdObject, is("Simple object created"));
+    }
+
+    @Test(expected = DependencyException.class)
+    public void createObjecteWithUnregisteredFactory() throws DependencyException {
+        injector.registerConstant("CONSTANT_1", "some value");
+        injector.getObject("NOT_REGISTERED_FACTORY");
     }
 
 //    @Test

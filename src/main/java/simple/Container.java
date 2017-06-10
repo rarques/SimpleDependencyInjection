@@ -35,9 +35,11 @@ public class Container implements Injector {
             throws DependencyException {
         if (registeredConstants.containsKey(name)) {
             return registeredConstants.get(name);
-        } else {
+        } else if (registeredFactories.containsKey(name)) {
             Factory factory = registeredFactories.get(name);
             return factory.create();
+        } else {
+            throw new DependencyException("Not registered constant/factory");
         }
     }
 
