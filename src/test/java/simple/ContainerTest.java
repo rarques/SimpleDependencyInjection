@@ -45,6 +45,12 @@ public class ContainerTest {
     }
 
     @Test(expected = DependencyException.class)
+    public void cannotRegisterFactoryWithSameName() throws DependencyException {
+        injector.registerFactory("Factory1", new SimpleFactory());
+        injector.registerFactory("Factory1", new SimpleFactory());
+    }
+
+    @Test(expected = DependencyException.class)
     public void createObjecteWithUnregisteredFactory() throws DependencyException {
         injector.registerConstant("CONSTANT_1", "some value");
         injector.getObject("NOT_REGISTERED_FACTORY");

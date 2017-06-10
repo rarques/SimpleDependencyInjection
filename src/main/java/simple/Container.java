@@ -28,19 +28,34 @@ public class Container implements Injector {
                                 Factory factory,
                                 String... parameters)
             throws DependencyException {
-        registeredFactories.put(name, factory);
+
+        if (!registeredFactories.containsKey(name)) {
+            registeredFactories.put(name, factory);
+        } else {
+            throw new DependencyException("A factory is already registered with the same name");
+        }
     }
 
     public Object getObject(String name)
             throws DependencyException {
-        if (registeredConstants.containsKey(name)) {
+
+        if (isConstant(name)) {
             return registeredConstants.get(name);
-        } else if (registeredFactories.containsKey(name)) {
+        } else if (isFactory(name)) {
             Factory factory = registeredFactories.get(name);
             return factory.create();
         } else {
             throw new DependencyException("Not registered constant/factory");
         }
+
+    }
+
+    private boolean isConstant(String name) {
+        return registeredConstants.containsKey(name);
+    }
+
+    private boolean isFactory(String name) {
+        return registeredFactories.containsKey(name);
     }
 
 }
