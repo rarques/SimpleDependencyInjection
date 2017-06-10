@@ -24,6 +24,7 @@ public class ContainerTest {
     @Before
     public void setUp() throws Exception {
         injector = new Container();
+        registerConstantsAndFactories();
     }
 
     @Test
@@ -82,16 +83,14 @@ public class ContainerTest {
 
     @Test(expected = DependencyException.class)
     public void createObjectWithUnregisteredConstant() throws DependencyException {
-        injector.registerFactory("D", new FactoryD1(), "I");
-        InterfaceD d = (InterfaceD) injector.getObject("D");
-        assertThat(d, is(instanceOf(ImplementationD1.class)));
+        injector.registerFactory("BigObject", new FactoryWithParameters(),
+                "A", "B", "C");
+        String object = (String) injector.getObject("BigObject");
     }
 
     @Test
     public void createImplementationD1() throws DependencyException {
-        injector.registerConstant("I", 25);
-        injector.registerFactory("D", new FactoryD1(), "I");
-        InterfaceD d = (InterfaceD) injector.getObject("D");
+        InterfaceD d = (InterfaceD) injector.getObject("D1");
         assertThat(d, is(instanceOf(ImplementationD1.class)));
         ImplementationD1 d1 = (ImplementationD1) d;
         assertThat(d1.getI(), is(25));
@@ -99,8 +98,6 @@ public class ContainerTest {
 
     @Test
     public void createImplementationC1() throws DependencyException {
-        injector.registerConstant("S", "Hello");
-        injector.registerFactory("C1", new FactoryC1(), "S");
         InterfaceC c = (InterfaceC) injector.getObject("C1");
         assertThat(c, is(instanceOf(ImplementationC1.class)));
         ImplementationC1 c1 = (ImplementationC1) c;
@@ -109,9 +106,6 @@ public class ContainerTest {
 
     @Test
     public void createImplementationB1() throws DependencyException {
-        injector.registerFactory("B1", new FactoryB1(), "D1");
-        injector.registerConstant("I", 25);
-        injector.registerFactory("D1", new FactoryD1(), "I");
         InterfaceB b = (InterfaceB) injector.getObject("B1");
         assertThat(b, is(instanceOf(ImplementationB1.class)));
         ImplementationB1 b1 = (ImplementationB1) b;
@@ -123,26 +117,33 @@ public class ContainerTest {
 
     @Test
     public void createImplementationA1() throws DependencyException {
+        InterfaceA a = (InterfaceA) injector.getObject("A1");
+        assertThat(a, is(instanceOf(ImplementationA1.class)));
+
+        ImplementationA1 a1 = (ImplementationA1) a;
+        InterfaceB b = a1.getB();
+        assertThat(b, is(instanceOf(ImplementationB1.class)));
+
+        InterfaceC c = a1.getC();
+        assertThat(c, is(instanceOf(ImplementationC1.class)));
+
+        InterfaceD d = ((ImplementationB1) b).getD();
+        assertThat(d, is(instanceOf(ImplementationD1.class)));
+
+        int i = ((ImplementationD1) d).getI();
+        assertThat(i, is(25));
+
+        String s = ((ImplementationC1) c).getString();
+        assertThat(s, is("Hello"));
+    }
+
+    private void registerConstantsAndFactories() throws DependencyException {
         injector.registerConstant("S", "Hello");
         injector.registerConstant("I", 25);
         injector.registerFactory("A1", new FactoryA1(), "B1", "C1");
         injector.registerFactory("B1", new FactoryB1(), "D1");
         injector.registerFactory("C1", new FactoryC1(), "S");
         injector.registerFactory("D1", new FactoryD1(), "I");
-
-        InterfaceA a = (InterfaceA) injector.getObject("A1");
-        assertThat(a, is(instanceOf(ImplementationA1.class)));
-        ImplementationA1 a1 = (ImplementationA1) a;
-        InterfaceB b = a1.getB();
-        assertThat(b, is(instanceOf(ImplementationB1.class)));
-        InterfaceC c = a1.getC();
-        assertThat(c, is(instanceOf(ImplementationC1.class)));
-        InterfaceD d = ((ImplementationB1) b).getD();
-        assertThat(d, is(instanceOf(ImplementationD1.class)));
-        int i = ((ImplementationD1) d).getI();
-        assertThat(i, is(25));
-        String s = ((ImplementationC1) c).getString();
-        assertThat(s, is("Hello"));
     }
 
 }

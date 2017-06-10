@@ -7,7 +7,7 @@ import simple.Factory;
 /**
  * Created by rarques on 6/10/2017.
  */
-public class FactoryC1 implements Factory{
+public class FactoryC1 implements Factory {
 
     @Override
     public ImplementationC1 create(Object... parameters)
