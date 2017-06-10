@@ -11,6 +11,16 @@ import static org.junit.Assert.assertThat;
 
 public class ContainerTest {
 
+    @Test
+    public void registerConstant() throws DependencyException {
+
+        Injector injector = new Container();
+        int value = 25;
+        injector.registerConstant("CONSTANT_A", value);
+        assertThat(injector.getObject("CONSTANT_A"), is(value));
+
+    }
+
 //    @Test
 //    public void sampleTest() {
 //        try {
