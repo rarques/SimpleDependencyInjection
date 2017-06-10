@@ -29,7 +29,7 @@ public class ContainerTest {
 
     @Test
     public void registerConstant() throws DependencyException {
-        int value = 25;
+        int value = 35;
         injector.registerConstant("CONSTANT_A", value);
         assertThat(injector.getObject("CONSTANT_A"), is(value));
     }
@@ -46,7 +46,7 @@ public class ContainerTest {
     }
 
     @Test
-    public void registerFactory() throws DependencyException {
+    public void registerFactoryWithOutParameters() throws DependencyException {
         injector.registerFactory("SimpleObject", new SimpleFactory());
         String createdObject = (String) injector.getObject("SimpleObject");
         assertThat(createdObject, is("Simple object created"));
