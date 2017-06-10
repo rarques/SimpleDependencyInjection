@@ -9,4 +9,8 @@ public class ImplementationC1 implements InterfaceC {
     public ImplementationC1(String s) {
         this.s = s;
     }
+
+    public String getString() {
+        return s;
+    }
 }

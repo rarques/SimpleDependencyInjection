@@ -1,10 +1,13 @@
 package simple;
 
 import common.DependencyException;
+import factories.FactoryC1;
 import factories.FactoryD1;
 import factories.FactoryWithParameters;
 import factories.SimpleFactory;
+import implementations.ImplementationC1;
 import implementations.ImplementationD1;
+import interfaces.InterfaceC;
 import interfaces.InterfaceD;
 import org.junit.Before;
 import org.junit.Test;
@@ -91,6 +94,16 @@ public class ContainerTest {
         injector.registerFactory("D", new FactoryD1(), "I");
         InterfaceD d = (InterfaceD) injector.getObject("D");
         assertThat(d, is(instanceOf(ImplementationD1.class)));
+    }
+
+    @Test
+    public void createImplementationC1() throws DependencyException {
+        injector.registerConstant("S", "Hello");
+        injector.registerFactory("C1", new FactoryC1(), "S");
+        InterfaceC c = (InterfaceC) injector.getObject("C1");
+        assertThat(c, is(instanceOf(ImplementationC1.class)));
+        ImplementationC1 c1 = (ImplementationC1) c;
+        assertThat(c1.getString(), is("Hello"));
     }
 
 }
