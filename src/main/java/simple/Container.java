@@ -15,6 +15,7 @@ public class Container implements Injector {
     public void registerConstant(String name,
                                  Object value)
             throws DependencyException {
+
         if (!registeredConstants.containsKey(name)) {
             registeredConstants.put(name, value);
         } else {

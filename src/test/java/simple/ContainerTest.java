@@ -3,6 +3,7 @@ package simple;
 import common.DependencyException;
 import implementations.ImplementationD1;
 import interfaces.InterfaceD;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -11,10 +12,16 @@ import static org.junit.Assert.assertThat;
 
 public class ContainerTest {
 
+    private Injector injector;
+
+    @Before
+    public void setUp() throws Exception {
+        injector = new Container();
+    }
+
     @Test
     public void registerConstant() throws DependencyException {
 
-        Injector injector = new Container();
         int value = 25;
         injector.registerConstant("CONSTANT_A", value);
         assertThat(injector.getObject("CONSTANT_A"), is(value));
@@ -23,7 +30,6 @@ public class ContainerTest {
 
     @Test(expected = DependencyException.class)
     public void cannotRegisterConstantsWithSameName() throws DependencyException {
-        Injector injector = new Container();
         injector.registerConstant("CONSTANT_NAME", "some value");
         injector.registerConstant("CONSTANT_NAME", "another value");
     }
