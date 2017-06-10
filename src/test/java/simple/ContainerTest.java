@@ -72,16 +72,6 @@ public class ContainerTest {
         injector.getObject("NOT_REGISTERED_FACTORY");
     }
 
-    @Test
-    public void createObjectWithRegisteredDependencies() throws DependencyException {
-        injector.registerConstant("I", 42);
-        injector.registerFactory("D", new FactoryD1(), "I");
-        InterfaceD d = (InterfaceD) injector.getObject("D");
-        assertThat(d, is(instanceOf(ImplementationD1.class)));
-        ImplementationD1 d1 = (ImplementationD1) d;
-        assertThat(d1.getI(), is(42));
-    }
-
     @Test(expected = DependencyException.class)
     public void createObjectWithWrongParameters() throws DependencyException {
         injector.registerFactory("D", new FactoryD1());
@@ -93,6 +83,16 @@ public class ContainerTest {
         injector.registerFactory("D", new FactoryD1(), "I");
         InterfaceD d = (InterfaceD) injector.getObject("D");
         assertThat(d, is(instanceOf(ImplementationD1.class)));
+    }
+
+    @Test
+    public void createImplementationD1() throws DependencyException {
+        injector.registerConstant("I", 42);
+        injector.registerFactory("D", new FactoryD1(), "I");
+        InterfaceD d = (InterfaceD) injector.getObject("D");
+        assertThat(d, is(instanceOf(ImplementationD1.class)));
+        ImplementationD1 d1 = (ImplementationD1) d;
+        assertThat(d1.getI(), is(42));
     }
 
     @Test
