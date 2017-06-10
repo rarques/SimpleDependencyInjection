@@ -70,8 +70,7 @@ public class Container implements Injector {
 
     private List<Object> getConstantsFromParameters(String[] parameters) {
         List<Object> constants = new LinkedList<>();
-        for (String parameter :
-                parameters) {
+        for (String parameter : parameters) {
             Object constant = registeredConstants.get(parameter);
             constants.add(constant);
         }
