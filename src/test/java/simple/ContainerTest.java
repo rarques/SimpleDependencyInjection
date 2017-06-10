@@ -21,6 +21,13 @@ public class ContainerTest {
 
     }
 
+    @Test(expected = DependencyException.class)
+    public void cannotRegisterConstantsWithSameName() throws DependencyException {
+        Injector injector = new Container();
+        injector.registerConstant("CONSTANT_NAME", "some value");
+        injector.registerConstant("CONSTANT_NAME", "another value");
+    }
+
 //    @Test
 //    public void sampleTest() {
 //        try {

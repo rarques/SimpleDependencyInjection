@@ -15,7 +15,11 @@ public class Container implements Injector {
     public void registerConstant(String name,
                                  Object value)
             throws DependencyException {
-        registeredConstants.put(name, value);
+        if (!registeredConstants.containsKey(name)) {
+            registeredConstants.put(name, value);
+        } else {
+            throw new DependencyException("A constant is already registered with the same name");
+        }
     }
 
     public void registerFactory(String name,
