@@ -11,6 +11,7 @@ import java.util.Map;
 public class Container implements Injector {
 
     private Map<String, Object> registeredConstants = new HashMap<>();
+    private Map<String, Factory> registeredFactories = new HashMap<>();
 
     public void registerConstant(String name,
                                  Object value)
@@ -27,12 +28,17 @@ public class Container implements Injector {
                                 Factory factory,
                                 String... parameters)
             throws DependencyException {
-        throw new UnsupportedOperationException("Not implemented yet");
+        registeredFactories.put(name, factory);
     }
 
     public Object getObject(String name)
             throws DependencyException {
-        return registeredConstants.get(name);
+        if (registeredConstants.containsKey(name)) {
+            return registeredConstants.get(name);
+        } else {
+            Factory factory = registeredFactories.get(name);
+            return factory.create();
+        }
     }
 
 }

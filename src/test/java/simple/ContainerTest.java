@@ -21,17 +21,22 @@ public class ContainerTest {
 
     @Test
     public void registerConstant() throws DependencyException {
-
         int value = 25;
         injector.registerConstant("CONSTANT_A", value);
         assertThat(injector.getObject("CONSTANT_A"), is(value));
-
     }
 
     @Test(expected = DependencyException.class)
     public void cannotRegisterConstantsWithSameName() throws DependencyException {
         injector.registerConstant("CONSTANT_NAME", "some value");
         injector.registerConstant("CONSTANT_NAME", "another value");
+    }
+
+    @Test
+    public void registerFactory() throws DependencyException {
+        injector.registerFactory("SimpleObject", new SimpleFactory());
+        String createdObject = (String) injector.getObject("SimpleObject");
+        assertThat(createdObject, is("Simple object created"));
     }
 
 //    @Test
@@ -49,6 +54,14 @@ public class ContainerTest {
 //        }
 //    }
 
+}
+
+class SimpleFactory implements Factory {
+
+    @Override
+    public Object create(Object... parameters) throws DependencyException {
+        return "Simple object created";
+    }
 }
 
 class FactoryD1 implements Factory {
