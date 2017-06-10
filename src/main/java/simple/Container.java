@@ -61,32 +61,22 @@ public class Container implements Injector {
         return registeredFactories.containsKey(name);
     }
 
-    private Object createObjectFromFactory(String name) throws DependencyException {
+    private Object createObjectFromFactory(String name)
+            throws DependencyException {
         Factory factory = registeredFactories.get(name);
         String[] parameters = parametersForFactories.get(factory);
-        List<Object> constants = getConstantsFromParameters(parameters);
-        return factory.create(constants.toArray());
+        List<Object> objects = getObjectsFromParameters(parameters);
+        return factory.create(objects.toArray());
     }
 
-    private List<Object> getConstantsFromParameters(String[] parameters) throws DependencyException {
-        List<Object> constants = new LinkedList<>();
+    private List<Object> getObjectsFromParameters(String[] parameters)
+            throws DependencyException {
+        List<Object> objects = new LinkedList<>();
         for (String parameter : parameters) {
-            Object constant = getConstant(parameter);
-            constants.add(constant);
+            Object object = getObject(parameter);
+            objects.add(object);
         }
-        return constants;
-    }
-
-    private Object getConstant(String parameter) throws DependencyException {
-        Object constant = registeredConstants.get(parameter);
-        if (constantIsNotRegistered(constant)) {
-            throw new DependencyException("Constant '" + parameter + "' not registered");
-        }
-        return constant;
-    }
-
-    private boolean constantIsNotRegistered(Object constant) {
-        return constant == null;
+        return objects;
     }
 
 }

@@ -10,4 +10,8 @@ public class ImplementationB1 implements InterfaceB {
     public ImplementationB1(InterfaceD d) {
         this.d = d;
     }
+
+    public InterfaceD getD() {
+        return d;
+    }
 }
