@@ -1,6 +1,9 @@
 package simple;
 
 import common.DependencyException;
+import factories.FactoryD1;
+import factories.FactoryWithParameters;
+import factories.SimpleFactory;
 import implementations.ImplementationD1;
 import interfaces.InterfaceD;
 import org.junit.Before;
@@ -92,38 +95,3 @@ public class ContainerTest {
 
 }
 
-class SimpleFactory implements Factory {
-
-    @Override
-    public Object create(Object... parameters) throws DependencyException {
-        return "Simple object created";
-    }
-}
-
-class FactoryWithParameters implements Factory {
-
-    @Override
-    public Object create(Object... parameters) throws DependencyException {
-        StringBuilder strb = new StringBuilder();
-        for (Object o : parameters) {
-            strb.append((String) o);
-        }
-        return strb.toString();
-    }
-}
-
-class FactoryD1 implements Factory {
-
-    @Override
-    public ImplementationD1 create(Object... parameters)
-            throws DependencyException {
-        int i;
-        try {
-            i = (int) parameters[0];
-        } catch (ClassCastException | ArrayIndexOutOfBoundsException ex) {
-            throw new DependencyException(ex);
-        }
-        return new ImplementationD1(i);
-    }
-
-}
