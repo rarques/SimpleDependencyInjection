@@ -42,6 +42,14 @@ public class ContainerTest {
         assertThat(createdObject, is("Simple object created"));
     }
 
+    @Test
+    public void registerFactoryWithParameters() throws DependencyException {
+        injector.registerFactory("BigObject", new FactoryWithParameters(),
+                "Parameter 1, ", "Parameter 2, ", "Parameter 3");
+        String object = (String) injector.getObject("BigObject");
+        assertThat(object, is("Parameter 1, Parameter 2, Parameter 3"));
+    }
+
     @Test(expected = DependencyException.class)
     public void cannotRegisterFactoryWithSameName() throws DependencyException {
         injector.registerFactory("Factory1", new SimpleFactory());
@@ -52,14 +60,6 @@ public class ContainerTest {
     public void createObjecteWithUnregisteredFactory() throws DependencyException {
         injector.registerConstant("CONSTANT_1", "some value");
         injector.getObject("NOT_REGISTERED_FACTORY");
-    }
-
-    @Test
-    public void registerFactoryWithParameters() throws DependencyException {
-        injector.registerFactory("BigObject", new FactoryWithParameters(),
-                "Parameter 1, ", "Parameter 2, ", "Parameter 3");
-        String object = (String) injector.getObject("BigObject");
-        assertThat(object, is("Parameter 1, Parameter 2, Parameter 3"));
     }
 
 //    @Test
