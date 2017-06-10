@@ -83,6 +83,13 @@ public class ContainerTest {
         InterfaceD d = (InterfaceD) injector.getObject("D");
     }
 
+    @Test(expected = DependencyException.class)
+    public void createObjectWithUnregisteredConstant() throws DependencyException {
+        injector.registerFactory("D", new FactoryD1(), "I");
+        InterfaceD d = (InterfaceD) injector.getObject("D");
+        assertThat(d, is(instanceOf(ImplementationD1.class)));
+    }
+
 }
 
 class SimpleFactory implements Factory {
