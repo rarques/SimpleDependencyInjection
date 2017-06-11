@@ -15,4 +15,7 @@ public interface Injector {
                              Factory<? extends E> creator,
                              Class<?>... parameters)
             throws DependencyException;
+
+    <E> E getObject(Class<E> name)
+            throws DependencyException;
 }
