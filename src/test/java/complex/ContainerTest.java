@@ -1,6 +1,7 @@
 package complex;
 
 import common.DependencyException;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -11,9 +12,15 @@ import static org.junit.Assert.assertThat;
  */
 public class ContainerTest {
 
+    private Injector injector;
+
+    @Before
+    public void setUp() throws Exception {
+        injector = new Container();
+    }
+
     @Test
     public void registerConstant() throws DependencyException {
-        Injector injector = new Container();
         injector.registerConstant(String.class, "Hello");
         String s = injector.getObject(String.class);
         assertThat(s, is("Hello"));
@@ -21,9 +28,13 @@ public class ContainerTest {
 
     @Test(expected = DependencyException.class)
     public void cannotRegisterConstantsWithSameName() throws DependencyException {
-        Injector injector = new Container();
         injector.registerConstant(String.class, "value");
         injector.registerConstant(String.class, "another value");
+    }
+
+    @Test(expected = DependencyException.class)
+    public void requestNotRegisteredConstant() throws DependencyException {
+        injector.getObject(Integer.class);
     }
 
 }

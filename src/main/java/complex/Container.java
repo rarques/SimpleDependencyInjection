@@ -34,8 +34,12 @@ public class Container implements Injector {
     @Override
     public <E> E getObject(Class<E> name)
             throws DependencyException {
-        Object obj = registeredConstants.get(name);
-        return name.cast(obj);
+        if (registeredConstants.containsKey(name)) {
+            Object obj = registeredConstants.get(name);
+            return name.cast(obj);
+        } else {
+            throw new DependencyException("Not registered constant/factory");
+        }
     }
 
 }
