@@ -15,7 +15,12 @@ public class Container implements Injector {
     @Override
     public <E> void registerConstant(Class<E> name, E value)
             throws DependencyException {
-        registeredConstants.put(name, value);
+        if (!registeredConstants.containsKey(name)) {
+            registeredConstants.put(name, value);
+        } else {
+            throw new DependencyException("A constant is already registered with the same name");
+        }
+
     }
 
     @Override

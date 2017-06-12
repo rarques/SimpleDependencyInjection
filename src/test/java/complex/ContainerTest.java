@@ -19,4 +19,11 @@ public class ContainerTest {
         assertThat(s, is("Hello"));
     }
 
+    @Test(expected = DependencyException.class)
+    public void cannotRegisterConstantsWithSameName() throws DependencyException {
+        Injector injector = new Container();
+        injector.registerConstant(String.class, "value");
+        injector.registerConstant(String.class, "another value");
+    }
+
 }
