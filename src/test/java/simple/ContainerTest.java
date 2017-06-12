@@ -1,7 +1,7 @@
 package simple;
 
 import common.DependencyException;
-import factories.*;
+import factories.simple.*;
 import implementations.ImplementationA1;
 import implementations.ImplementationB1;
 import implementations.ImplementationC1;

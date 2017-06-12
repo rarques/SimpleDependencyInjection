@@ -1,4 +1,4 @@
-package factories;
+package factories.simple;
 
 import common.DependencyException;
 import implementations.ImplementationA1;

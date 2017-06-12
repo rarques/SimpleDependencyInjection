@@ -1,6 +1,7 @@
 package complex;
 
 import common.DependencyException;
+import implementations.ImplementationD1;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,4 +38,36 @@ public class ContainerTest {
         injector.getObject(Integer.class);
     }
 
+    @Test
+    public void registerFactoryWithoutParameters() throws DependencyException {
+
+    }
+
+//    @Test
+//    public void registerFactory() throws DependencyException {
+//        Injector injector = new Container();
+//        injector.registerConstant(Integer.class, 42);
+//        injector.registerFactory(InterfaceD.class,
+//                new FactoryD1(),
+//                Integer.class);
+//        InterfaceD d = injector.getObject(InterfaceD.class);
+//        assertThat(d, is(instanceOf(ImplementationD1.class)));
+//        ImplementationD1 d1 = (ImplementationD1) d;
+//        assertThat(d1.getI(), is(42));
+//    }
+
+}
+
+class FactoryD1 implements Factory<ImplementationD1> {
+    @Override
+    public ImplementationD1 create(Object... parameters)
+            throws DependencyException {
+        int i;
+        try {
+            i = (int) parameters[0];
+        } catch (ClassCastException | ArrayIndexOutOfBoundsException ex) {
+            throw new DependencyException(ex);
+        }
+        return new ImplementationD1(i);
+    }
 }
