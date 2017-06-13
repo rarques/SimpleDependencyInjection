@@ -1,6 +1,7 @@
 package complex;
 
 import common.DependencyException;
+import factories.complex.SimpleFactory;
 import implementations.ImplementationD1;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +41,9 @@ public class ContainerTest {
 
     @Test
     public void registerFactoryWithoutParameters() throws DependencyException {
-
+        injector.registerFactory(String.class, new SimpleFactory());
+        String actual = injector.getObject(String.class);
+        assertThat(actual, is("Hello from factory"));
     }
 
 //    @Test
