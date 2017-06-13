@@ -46,6 +46,12 @@ public class ContainerTest {
         assertThat(actual, is("Hello from factory"));
     }
 
+    @Test(expected = DependencyException.class)
+    public void registerFactoriesWithSameName() throws DependencyException {
+        injector.registerFactory(String.class, new SimpleFactory());
+        injector.registerFactory(String.class, new SimpleFactory());
+    }
+
 //    @Test
 //    public void registerFactory() throws DependencyException {
 //        Injector injector = new Container();

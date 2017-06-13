@@ -29,7 +29,11 @@ public class Container implements Injector {
                                     Factory<? extends E> creator,
                                     Class<?>[] parameters)
             throws DependencyException {
-        registeredFactories.put(name, creator);
+        if (!registeredFactories.containsKey(name)) {
+            registeredFactories.put(name, creator);
+        } else {
+            throw new DependencyException("A factory is already registered with the same name");
+        }
     }
 
     @Override
