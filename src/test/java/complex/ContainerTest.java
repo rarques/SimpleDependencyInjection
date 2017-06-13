@@ -52,6 +52,11 @@ public class ContainerTest {
         injector.registerFactory(String.class, new SimpleFactory());
     }
 
+    @Test(expected = DependencyException.class)
+    public void createObjectWithUnregisteredFactory() throws DependencyException {
+        injector.getObject(String.class);
+    }
+
 //    @Test
 //    public void registerFactory() throws DependencyException {
 //        Injector injector = new Container();
