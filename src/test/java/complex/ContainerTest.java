@@ -1,12 +1,15 @@
 package complex;
 
 import common.DependencyException;
+import factories.complex.FactoryD1;
 import factories.complex.SimpleFactory;
 import implementations.ImplementationD1;
+import interfaces.InterfaceD;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -57,31 +60,17 @@ public class ContainerTest {
         injector.getObject(String.class);
     }
 
-//    @Test
-//    public void registerFactory() throws DependencyException {
-//        Injector injector = new Container();
-//        injector.registerConstant(Integer.class, 42);
-//        injector.registerFactory(InterfaceD.class,
-//                new FactoryD1(),
-//                Integer.class);
-//        InterfaceD d = injector.getObject(InterfaceD.class);
-//        assertThat(d, is(instanceOf(ImplementationD1.class)));
-//        ImplementationD1 d1 = (ImplementationD1) d;
-//        assertThat(d1.getI(), is(42));
-//    }
-
-}
-
-class FactoryD1 implements Factory<ImplementationD1> {
-    @Override
-    public ImplementationD1 create(Object... parameters)
-            throws DependencyException {
-        int i;
-        try {
-            i = (int) parameters[0];
-        } catch (ClassCastException | ArrayIndexOutOfBoundsException ex) {
-            throw new DependencyException(ex);
-        }
-        return new ImplementationD1(i);
+    @Test
+    public void createImplementationD1() throws DependencyException {
+        Injector injector = new Container();
+        injector.registerConstant(Integer.class, 42);
+        injector.registerFactory(InterfaceD.class,
+                new FactoryD1(),
+                Integer.class);
+        InterfaceD d = injector.getObject(InterfaceD.class);
+        assertThat(d, is(instanceOf(ImplementationD1.class)));
+        ImplementationD1 d1 = (ImplementationD1) d;
+        assertThat(d1.getI(), is(42));
     }
+
 }
