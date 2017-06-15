@@ -1,13 +1,12 @@
 package complex;
 
 import common.DependencyException;
-import factories.complex.FactoryB1;
-import factories.complex.FactoryC1;
-import factories.complex.FactoryD1;
-import factories.complex.SimpleFactory;
+import factories.complex.*;
+import implementations.ImplementationA1;
 import implementations.ImplementationB1;
 import implementations.ImplementationC1;
 import implementations.ImplementationD1;
+import interfaces.InterfaceA;
 import interfaces.InterfaceB;
 import interfaces.InterfaceC;
 import interfaces.InterfaceD;
@@ -34,9 +33,11 @@ public class ContainerTest {
     private void registerConstantsAndFactories() throws DependencyException {
         injector.registerConstant(String.class, "Hello");
         injector.registerConstant(Integer.class, 42);
-        injector.registerFactory(InterfaceD.class, new FactoryD1(), Integer.class);
-        injector.registerFactory(InterfaceC.class, new FactoryC1(), String.class);
+        injector.registerFactory(InterfaceA.class, new FactoryA1(),
+                InterfaceB.class, InterfaceC.class);
         injector.registerFactory(InterfaceB.class, new FactoryB1(), InterfaceD.class);
+        injector.registerFactory(InterfaceC.class, new FactoryC1(), String.class);
+        injector.registerFactory(InterfaceD.class, new FactoryD1(), Integer.class);
     }
 
     @Test
@@ -103,6 +104,28 @@ public class ContainerTest {
 
         ImplementationD1 d1 = (ImplementationD1) d;
         assertThat(d1.getI(), is(42));
+    }
+
+    @Test
+    public void createImplementationA1() throws DependencyException {
+        InterfaceA a = injector.getObject(InterfaceA.class);
+        assertThat(a, is(instanceOf(ImplementationA1.class)));
+
+        ImplementationA1 a1 = (ImplementationA1) a;
+        InterfaceB b = a1.getB();
+        assertThat(b, is(instanceOf(ImplementationB1.class)));
+
+        InterfaceC c = a1.getC();
+        assertThat(c, is(instanceOf(ImplementationC1.class)));
+
+        InterfaceD d = ((ImplementationB1) b).getD();
+        assertThat(d, is(instanceOf(ImplementationD1.class)));
+
+        int i = ((ImplementationD1) d).getI();
+        assertThat(i, is(42));
+
+        String s = ((ImplementationC1) c).getString();
+        assertThat(s, is("Hello"));
     }
 
 }
