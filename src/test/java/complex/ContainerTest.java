@@ -55,6 +55,12 @@ public class ContainerTest {
         injector.getObject(String.class);
     }
 
+    @Test(expected = DependencyException.class)
+    public void createObjectWithoutRegisteredDependencies() throws DependencyException {
+        injector.registerFactory(InterfaceD.class, new FactoryD1(), Integer.class);
+        injector.getObject(InterfaceD.class);
+    }
+
     @Test
     public void createImplementationD1() throws DependencyException {
         Injector injector = new Container();
