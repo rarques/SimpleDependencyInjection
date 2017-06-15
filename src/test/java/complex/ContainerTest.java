@@ -1,11 +1,14 @@
 package complex;
 
 import common.DependencyException;
+import factories.complex.FactoryB1;
 import factories.complex.FactoryC1;
 import factories.complex.FactoryD1;
 import factories.complex.SimpleFactory;
+import implementations.ImplementationB1;
 import implementations.ImplementationC1;
 import implementations.ImplementationD1;
+import interfaces.InterfaceB;
 import interfaces.InterfaceC;
 import interfaces.InterfaceD;
 import org.junit.Before;
@@ -31,8 +34,9 @@ public class ContainerTest {
     private void registerConstantsAndFactories() throws DependencyException {
         injector.registerConstant(String.class, "Hello");
         injector.registerConstant(Integer.class, 42);
-        injector.registerFactory(ImplementationC1.class, new FactoryC1(), String.class);
         injector.registerFactory(InterfaceD.class, new FactoryD1(), Integer.class);
+        injector.registerFactory(InterfaceC.class, new FactoryC1(), String.class);
+        injector.registerFactory(InterfaceB.class, new FactoryB1(), InterfaceD.class);
     }
 
     @Test
@@ -82,7 +86,7 @@ public class ContainerTest {
 
     @Test
     public void createImplementationC1() throws DependencyException {
-        InterfaceC c = injector.getObject(ImplementationC1.class);
+        InterfaceC c = injector.getObject(InterfaceC.class);
         assertThat(c, is(instanceOf(ImplementationC1.class)));
         ImplementationC1 c1 = (ImplementationC1) c;
         assertThat(c1.getString(), is("Hello"));
@@ -90,7 +94,15 @@ public class ContainerTest {
 
     @Test
     public void createImplementationB1() throws DependencyException {
+        InterfaceB b = injector.getObject(InterfaceB.class);
+        assertThat(b, is(instanceOf(ImplementationB1.class)));
 
+        ImplementationB1 b1 = (ImplementationB1) b;
+        InterfaceD d = b1.getD();
+        assertThat(d, is(instanceOf(ImplementationD1.class)));
+
+        ImplementationD1 d1 = (ImplementationD1) d;
+        assertThat(d1.getI(), is(42));
     }
 
 }
