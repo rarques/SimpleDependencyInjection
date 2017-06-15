@@ -1,9 +1,12 @@
 package complex;
 
 import common.DependencyException;
+import factories.complex.FactoryC1;
 import factories.complex.FactoryD1;
 import factories.complex.SimpleFactory;
+import implementations.ImplementationC1;
 import implementations.ImplementationD1;
+import interfaces.InterfaceC;
 import interfaces.InterfaceD;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,13 +60,12 @@ public class ContainerTest {
 
     @Test(expected = DependencyException.class)
     public void createObjectWithoutRegisteredDependencies() throws DependencyException {
-        injector.registerFactory(InterfaceD.class, new FactoryD1(), Integer.class);
+        injector.registerFactory(InterfaceD.class, new FactoryD1(), Long.class);
         injector.getObject(InterfaceD.class);
     }
 
     @Test
     public void createImplementationD1() throws DependencyException {
-        Injector injector = new Container();
         injector.registerConstant(Integer.class, 42);
         injector.registerFactory(InterfaceD.class,
                 new FactoryD1(),
@@ -74,6 +76,14 @@ public class ContainerTest {
         assertThat(d1.getI(), is(42));
     }
 
-
+    @Test
+    public void createImplementationC1() throws DependencyException {
+        injector.registerConstant(String.class, "Hello");
+        injector.registerFactory(ImplementationC1.class, new FactoryC1(), String.class);
+        InterfaceC c = injector.getObject(ImplementationC1.class);
+        assertThat(c, is(instanceOf(ImplementationC1.class)));
+        ImplementationC1 c1 = (ImplementationC1) c;
+        assertThat(c1.getString(), is("Hello"));
+    }
 
 }
