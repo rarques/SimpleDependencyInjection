@@ -37,11 +37,6 @@ public class ContainerTest {
         injector.registerConstant(String.class, "another value");
     }
 
-    @Test(expected = DependencyException.class)
-    public void requestNotRegisteredConstant() throws DependencyException {
-        injector.getObject(Integer.class);
-    }
-
     @Test
     public void registerFactoryWithoutParameters() throws DependencyException {
         injector.registerFactory(String.class, new SimpleFactory());
@@ -72,5 +67,7 @@ public class ContainerTest {
         ImplementationD1 d1 = (ImplementationD1) d;
         assertThat(d1.getI(), is(42));
     }
+
+
 
 }
