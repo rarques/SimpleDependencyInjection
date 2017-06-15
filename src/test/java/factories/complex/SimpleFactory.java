@@ -6,11 +6,11 @@ import complex.Factory;
 /**
  * Created by rarques on 6/10/2017.
  */
-public class SimpleFactory implements Factory<String> {
+public class SimpleFactory implements Factory<Long> {
 
     @Override
-    public String create(Object... parameters) throws DependencyException {
-        return "Hello from factory";
+    public Long create(Object... parameters) throws DependencyException {
+        return (long) 123456789;
     }
 
 }

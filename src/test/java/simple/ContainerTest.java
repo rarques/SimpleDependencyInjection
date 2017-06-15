@@ -27,6 +27,15 @@ public class ContainerTest {
         registerConstantsAndFactories();
     }
 
+    private void registerConstantsAndFactories() throws DependencyException {
+        injector.registerConstant("S", "Hello");
+        injector.registerConstant("I", 25);
+        injector.registerFactory("A1", new FactoryA1(), "B1", "C1");
+        injector.registerFactory("B1", new FactoryB1(), "D1");
+        injector.registerFactory("C1", new FactoryC1(), "S");
+        injector.registerFactory("D1", new FactoryD1(), "I");
+    }
+
     @Test
     public void registerConstant() throws DependencyException {
         int value = 35;
@@ -135,15 +144,6 @@ public class ContainerTest {
 
         String s = ((ImplementationC1) c).getString();
         assertThat(s, is("Hello"));
-    }
-
-    private void registerConstantsAndFactories() throws DependencyException {
-        injector.registerConstant("S", "Hello");
-        injector.registerConstant("I", 25);
-        injector.registerFactory("A1", new FactoryA1(), "B1", "C1");
-        injector.registerFactory("B1", new FactoryB1(), "D1");
-        injector.registerFactory("C1", new FactoryC1(), "S");
-        injector.registerFactory("D1", new FactoryD1(), "I");
     }
 
 }

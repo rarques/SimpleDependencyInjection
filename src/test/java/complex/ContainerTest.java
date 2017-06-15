@@ -25,37 +25,45 @@ public class ContainerTest {
     @Before
     public void setUp() throws Exception {
         injector = new Container();
+        registerConstantsAndFactories();
+    }
+
+    private void registerConstantsAndFactories() throws DependencyException {
+        injector.registerConstant(String.class, "Hello");
+        injector.registerConstant(Integer.class, 42);
+        injector.registerFactory(ImplementationC1.class, new FactoryC1(), String.class);
+        injector.registerFactory(InterfaceD.class, new FactoryD1(), Integer.class);
     }
 
     @Test
     public void registerConstant() throws DependencyException {
-        injector.registerConstant(String.class, "Hello");
-        String s = injector.getObject(String.class);
-        assertThat(s, is("Hello"));
+        injector.registerConstant(Long.class, 123456789L);
+        Long l = injector.getObject(Long.class);
+        assertThat(l, is(123456789L));
     }
 
     @Test(expected = DependencyException.class)
     public void cannotRegisterConstantsWithSameName() throws DependencyException {
-        injector.registerConstant(String.class, "value");
-        injector.registerConstant(String.class, "another value");
+        injector.registerConstant(Long.class, 12L);
+        injector.registerConstant(Long.class, 12L);
     }
 
     @Test
     public void registerFactoryWithoutParameters() throws DependencyException {
-        injector.registerFactory(String.class, new SimpleFactory());
-        String actual = injector.getObject(String.class);
-        assertThat(actual, is("Hello from factory"));
+        injector.registerFactory(Long.class, new SimpleFactory());
+        Long actual = injector.getObject(Long.class);
+        assertThat(actual, is(123456789L));
     }
 
     @Test(expected = DependencyException.class)
     public void registerFactoriesWithSameName() throws DependencyException {
-        injector.registerFactory(String.class, new SimpleFactory());
-        injector.registerFactory(String.class, new SimpleFactory());
+        injector.registerFactory(Long.class, new SimpleFactory());
+        injector.registerFactory(Long.class, new SimpleFactory());
     }
 
     @Test(expected = DependencyException.class)
     public void createObjectWithUnregisteredFactory() throws DependencyException {
-        injector.getObject(String.class);
+        injector.getObject(Double.class);
     }
 
     @Test(expected = DependencyException.class)
@@ -66,10 +74,6 @@ public class ContainerTest {
 
     @Test
     public void createImplementationD1() throws DependencyException {
-        injector.registerConstant(Integer.class, 42);
-        injector.registerFactory(InterfaceD.class,
-                new FactoryD1(),
-                Integer.class);
         InterfaceD d = injector.getObject(InterfaceD.class);
         assertThat(d, is(instanceOf(ImplementationD1.class)));
         ImplementationD1 d1 = (ImplementationD1) d;
@@ -78,12 +82,15 @@ public class ContainerTest {
 
     @Test
     public void createImplementationC1() throws DependencyException {
-        injector.registerConstant(String.class, "Hello");
-        injector.registerFactory(ImplementationC1.class, new FactoryC1(), String.class);
         InterfaceC c = injector.getObject(ImplementationC1.class);
         assertThat(c, is(instanceOf(ImplementationC1.class)));
         ImplementationC1 c1 = (ImplementationC1) c;
         assertThat(c1.getString(), is("Hello"));
+    }
+
+    @Test
+    public void createImplementationB1() throws DependencyException {
+
     }
 
 }
