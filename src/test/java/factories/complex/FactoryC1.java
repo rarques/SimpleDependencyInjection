@@ -3,7 +3,6 @@ package factories.complex;
 import common.DependencyException;
 import complex.Factory;
 import implementations.ImplementationC1;
-import implementations.ImplementationD1;
 
 /**
  * Created by rarques on 6/15/2017.

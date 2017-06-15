@@ -13,10 +13,10 @@ import java.util.Map;
 public class Container implements Injector {
 
     private Map<Class<?>, Object> registeredConstants = new HashMap<>();
-    private Map<Class<?>, Factory<?>> registeredFactories = new HashMap<>();
-    private Map<Factory<?>, Class<?>[]> parametersForFactories = new HashMap<>();
+    private Map<Class<?>, FactoryWrapper> registeredFactories = new HashMap<>();
 
     @Override
+
     public <E> void registerConstant(Class<E> name, E value)
             throws DependencyException {
         if (!registeredConstants.containsKey(name)) {
@@ -33,8 +33,8 @@ public class Container implements Injector {
                                     Class<?>[] parameters)
             throws DependencyException {
         if (!registeredFactories.containsKey(name)) {
-            registeredFactories.put(name, creator);
-            parametersForFactories.put(creator, parameters);
+            FactoryWrapper wrapper = new FactoryWrapper(creator, parameters);
+            registeredFactories.put(name, wrapper);
         } else {
             throw new DependencyException("A factory is already registered with the same name");
         }
@@ -45,8 +45,7 @@ public class Container implements Injector {
     public <E> E getObject(Class<E> name)
             throws DependencyException {
         if (isConstant(name)) {
-            Object obj = registeredConstants.get(name);
-            return (E) obj;
+            return (E) registeredConstants.get(name);
         } else if (isFactory(name)) {
             return createObjectFromFactory(name);
         } else {
@@ -56,8 +55,9 @@ public class Container implements Injector {
 
     @SuppressWarnings("unchecked")
     private <E> E createObjectFromFactory(Class<E> name) throws DependencyException {
-        Factory<? extends E> factory = (Factory<? extends E>) registeredFactories.get(name);
-        Class<?>[] parameters = parametersForFactories.get(factory);
+        FactoryWrapper wrapper = registeredFactories.get(name);
+        Factory<? extends E> factory = (Factory<? extends E>) wrapper.factory;
+        Class<?>[] parameters = wrapper.parameters;
         Object[] factoryParameters = getParametersFromInjector(parameters);
         return (E) factory.create(factoryParameters);
     }
@@ -80,4 +80,14 @@ public class Container implements Injector {
         return registeredConstants.containsKey(name);
     }
 
+    private class FactoryWrapper {
+
+        Factory<?> factory;
+        Class<?>[] parameters;
+
+        FactoryWrapper(Factory<?> factory, Class<?>[] parameters) {
+            this.factory = factory;
+            this.parameters = parameters;
+        }
+    }
 }

@@ -13,13 +13,11 @@ import java.util.Map;
 public class Container implements Injector {
 
     private Map<String, Object> registeredConstants = new HashMap<>();
-    private Map<String, Factory> registeredFactories = new HashMap<>();
-    private Map<Factory, String[]> parametersForFactories = new HashMap<>();
+    private Map<String, FactoryWrapper> registeredFactories = new HashMap<>();
 
     public void registerConstant(String name,
                                  Object value)
             throws DependencyException {
-
         if (!registeredConstants.containsKey(name)) {
             registeredConstants.put(name, value);
         } else {
@@ -31,10 +29,9 @@ public class Container implements Injector {
                                 Factory factory,
                                 String... parameters)
             throws DependencyException {
-
         if (!registeredFactories.containsKey(name)) {
-            registeredFactories.put(name, factory);
-            parametersForFactories.put(factory, parameters);
+            FactoryWrapper wrapper = new FactoryWrapper(factory, parameters);
+            registeredFactories.put(name, wrapper);
         } else {
             throw new DependencyException("A factory is already registered with the same name");
         }
@@ -42,7 +39,6 @@ public class Container implements Injector {
 
     public Object getObject(String name)
             throws DependencyException {
-
         if (isConstant(name)) {
             return registeredConstants.get(name);
         } else if (isFactory(name)) {
@@ -50,7 +46,6 @@ public class Container implements Injector {
         } else {
             throw new DependencyException("Not registered constant/factory");
         }
-
     }
 
     private boolean isConstant(String name) {
@@ -63,8 +58,9 @@ public class Container implements Injector {
 
     private Object createObjectFromFactory(String name)
             throws DependencyException {
-        Factory factory = registeredFactories.get(name);
-        String[] parameters = parametersForFactories.get(factory);
+        FactoryWrapper wrapper = registeredFactories.get(name);
+        Factory factory = wrapper.factory;
+        String[] parameters = wrapper.parameters;
         List<Object> objects = getObjectsFromParameters(parameters);
         return factory.create(objects.toArray());
     }
@@ -79,4 +75,14 @@ public class Container implements Injector {
         return objects;
     }
 
+    private class FactoryWrapper {
+
+        private Factory factory;
+        private String[] parameters;
+
+        FactoryWrapper(Factory factory, String[] parameters) {
+            this.factory = factory;
+            this.parameters = parameters;
+        }
+    }
 }
